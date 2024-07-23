@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Part B</title>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- DivA, div for main page - Displays the option to display the other divs -->
+        <div id="divA" class="divA">
+            <p1>DIV A - Main Page</p1>
+            <div id="advanceDayDiv" class="advanceDayDiv" name="advanceDayDiv">
+                <label for="dayInput">DAY</label>
+                <input type="number" id="dayInput" class="dayInput" name="dayInput" readonly>
+                <button id="advanceDayBtn" class="advanceDayBtn" name="advanceDayBtn">Advance Day</button>
+            </div>
+            <div>
+                <label for="divBRadio">Create Boxcar</label>
+                <input type="radio" id="divBRadio" class="divBRadio" name="CreateBoxCar">
+                <label for="divDRadio">Add Freight</label>
+                <input type="radio" id="divDRadio" class="divDRadio" name="AddFreight">
+                <label for="divCRadio">Boxcar Data</label>
+                <input type="radio" id="divCRadio" class="divCRadio" name="DisplayBoxcarManifest">
+                <label for="divFRadio">Warehouse Data</label>
+                <input type="radio" id="divFRadio" class="divFRadio" name="DisplayWarehouseManifest">
+                <label for="divGRadio">All Freight Status</label>
+                <input type="radio" id="divGRadio" class="divGRadio" name="DisplayAllFreight">
+            </div>
+        </div>
+
+        <!-- DivB, div for creating box car page -->
+        <div id="divB" class="divB" hidden>
+            <p1>DIV B - Create Box Car</p1>
+            <!-- Text Inputs for DivB -->
+            <label for="boxcarID">Box Car ID</label>
+            <input type="text" id="boxcarID" class="boxcarID" name="boxcarID" placeholder="BX123" value="">
+            <span id="boxcarIDSpan"></span>
+
+            <label for="tareWeight">TARE Weight</label>
+            <input type="text" id="tareWeight" class="tareWeight" name="tareWeight" value="0">
+            <span id="tareWeightSpan"></span>
+
+            <label for="maxGrossWeight">Max Gross Weight</label>
+            <input type="text" id="maxGrossWeight" class="maxGrossWeight" name="maxGrossWeight" value="0">
+            <span id="maxGrossWeightSpan"></span>
+
+            <label for="cargoWeight">Cargo Weight</label>
+            <input type="text" id="cargoWeight" class="cargoWeight" name="cargoWeight" value="0" readonly>
+
+            <label for="grossWeight">Gross Weight</label>
+            <input type="text" id="grossWeight" class="grossWeight" name="grossWeight" value="" readonly>
+
+            <!-- Buttons for Div B -->
+            <button id="processBoxCar" class="processBoxCar" name="processBoxCar">Process Box Car</button>
+            <button id="divBResetForm" class="divBResetForm" name="divBResetForm">Reset Form</button>
+            <button id="divBReturnMainPage" class="divBReturnMainPage" name="divBReturnMainPage">Return to Main Page</button>
+        </div>
+
+        <!-- DivC, div for displaying configured boxcar's -->
+        <div id="divC" class="divC" hidden>
+            <p1>DIV C - Configured Boxcar's</p1>
+
+            <!-- Table for displaying box cars -->
+            <table id="configuredBoxCarTable">
+                <thead>
+                    <tr>
+                        <th>Box Car ID</th>
+                        <th>TARE</th>
+                        <th>Max Gross</th>
+                        <th>Cargo</th>
+                        <th>Gross</th>
+                    </tr>
+                </thead>
+
+                <tfoot>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td>Total Cargo Weight:</td>
+                        <td id="totalCargoWeightIntValue">0</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <button id="returnToCreateBoxCar" class="returnToCreateBoxCar" name="returnToCreateBoxCar">Return to Create Box Car</button>
+            <button id="divCReturnMainPage" class="divCReturnMainPage" name="divCReturnMainPage">Return to Main Page</button>
+        </div>
+
+        <!-- DivD, div for adding freight -->
+        <div id="divD" class="divD" hidden>
+            <p1>DIV D - Add Freight</p1>
+            <div>
+                <h3>Box Car ID</h3>
+                <select disabled id="divDSelectBoxCar">
+                    <option>select</option>
+                </select>
+            </div>
+            <div>
+                <label for="divDBoxCarSelected">Selected Boxcar</label>
+                <input id="divDBoxCarSelected" type="text" readonly>
+                <label for="divDTransportID">Transport ID</label>
+                <input id="divDTransportID" type="text" disabled>
+                <span id="divDTransportIDSpan"></span>
+                <label for="divDDescription">Description</label>
+                <input id="divDDescription" type="text" disabled>
+                <span id="divDDescriptionSpan"></span>
+                <label for="divDCargoWeight">Cargo Weight</label>
+                <input id="divDCargoWeight" type="text" disabled>
+                <span id="divDCargoWeightSpan"></span>
+                <button id="processCargo">Process Cargo</button>
+                <button id="divDResetForm">Reset Form</button>
+            </div>
+            <button id="divDReturnMainPage" class="divDReturnMainPage" name="divDReturnMainPage">Return to Main Page</button>
+        </div>
+
+        <!-- DivE, div for displaying boxcar manifest -->
+        <div id="divE" class="divE" hidden>
+            <p1>DIV E - Boxcar Manifest</p1>
+
+            <div>
+                <!-- Table for displaying box cars -->
+                <table id="boxCarManifest">
+                    <thead>
+                        <tr>
+                            <th>Transport ID</th>
+                            <th>Description</th>
+                            <th>Weight</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td>Total Cargo Weight:</td>
+                            <td id="divETotalCargoWeightIntValue">0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <button id="returnToCreateFreightEntry" class="returnToCreateFreightEntry" name="returnToCreateFreightEntry">Return to Create Freight Entry</button>
+                <button id="divEReturnMainPage" class="divEReturnMainPage" name="divCReturnMainPage">Return to Main Page</button>
+            </div>
+        </div>
+
+        <!-- DivF, div for displaying warehouse manifest -->
+        <div id="divF" class="divF" hidden>
+            <p1>DIV F - Warehouse Manifest</p1>
+
+            <div>
+                <div id="S1">
+                    <p1>Station 1</p1>
+                    <table id="warehouseManifestS1">
+                        <thead>
+                            <tr>
+                                <th>Transport ID</th>
+                                <th>Description</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+    
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>Total Cargo Weight:</td>
+                                <td id="divFTotalCargoWeightIntValueS1">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div id="S2">
+                    <p1>Station 2</p1>
+                    <table id="warehouseManifestS2">
+                        <thead>
+                            <tr>
+                                <th>Transport ID</th>
+                                <th>Description</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+    
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>Total Cargo Weight:</td>
+                                <td id="divFTotalCargoWeightIntValueS2">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div id="S3">
+                    <p1>Station 3</p1>
+                    <table id="warehouseManifestS3">
+                        <thead>
+                            <tr>
+                                <th>Transport ID</th>
+                                <th>Description</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+    
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>Total Cargo Weight:</td>
+                                <td id="divFTotalCargoWeightIntValueS3">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div id="S4">
+                    <p1>Station 4</p1>
+                    <table id="warehouseManifestS4">
+                        <thead>
+                            <tr>
+                                <th>Transport ID</th>
+                                <th>Description</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+    
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>Total Cargo Weight:</td>
+                                <td id="divFTotalCargoWeightIntValueS4">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <button id="divFReturnToCreateFreightEntry" class="divFReturnToCreateFreightEntry" name="divFReturnToCreateFreightEntry">Return to Create Freight Entry</button>
+                <button id="divFReturnMainPage" class="divFReturnMainPage" name="divFReturnMainPage">Return to Main Page</button>
+            </div>
+        </div>
+
+        <!-- DivG, div for displaying entire freight status -->
+        <div id="divG" class="divG" hidden>
+            <p1>DIV G - Freight Status</p1>
+
+            <div>
+                <!-- Table for displaying box cars -->
+                <table id="completeFreightStatus">
+                    <thead>
+                        <tr>
+                            <th>Transport ID</th>
+                            <th>Description</th>
+                            <th>Weight</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                </table>
+                <button id="divGReturnMainPage" class="divGReturnMainPage" name="divGReturnMainPage">Return to Main Page</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
