@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Variables
     var currentDay = 1;
     var currentStationNum = 1;
-    var currentStation = 'S1';
 
     // Get all the divs required
     const divA = $("#divA");
@@ -34,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const radioC = $("#divCRadio");
     const radioF = $("#divFRadio");
     const radioG = $("#divGRadio");
+    const sumDisplay = $("#sumDisplay")
 
     // Get all the inputs for div B (Create box car)
     const boxCarIDInput = $("#boxcarID");
@@ -108,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         If div B is displayed, div C is ALWAYS displayed with it.
     */
     const changeDiv = (div) => {
+        clearRadioSelections();
         divA.hidden = true;
         divB.hidden = true;
         divC.hidden = true;
@@ -194,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
         configuredBoxCarTable.append(tableBody);
         totalCargoWeightIntValue.textContent = totalCargoWeight;
+        document.cookie = `totalWeightBoxCars=${totalCargoWeight}`;
     };
 
     const divDOnStart = (boxCarArray) => {
@@ -260,52 +262,59 @@ document.addEventListener("DOMContentLoaded", () => {
         Function
     */
 
-    const processCargo = (boxCarCargoManifestArray, boxCarArray, s1WarehouseCargoManifestArray, s2WarehouseCargoManifestArray, s3WarehouseCargoManifestArray, s4WarehouseCargoManifestArray, totalWarehouseCargoManifestArray) => {
+    const processCargo = (boxCarCargoManifestArray, boxCarArray, s1WarehouseCargoManifestArray, s2WarehouseCargoManifestArray, s3WarehouseCargoManifestArray, s4WarehouseCargoManifestArray) => {
         // Validate input fields
-        if (divDTransportID.value === "") {
-            divDTransportIDSpan.textContent = "Must enter a transport ID";
-        } else if (divDDescription.value === "") {
-            divDDescriptionSpan.textContent = "Must enter a Description";
-        } else if (isNaN(divDCargoWeight.value) || parseInt(divDCargoWeight.value) <= 0) {
-            divDCargoWeightSpan.textContent = "Cargo weight must be a number and > 0";
-        } else if (!(/[a-zA-Z]{3}\d{4}S0[1-4]/).test(divDTransportID.value)){
-            divDTransportIDSpan.textContent = "Transport ID must match the following format: 3 letters, 4 digits, S0[1-4]"
-        } else {
-            const freightEntry = {
-                boxCarID: divDBoxCarSelected.value,
-                transportID: divDTransportID.value,
-                description: divDDescription.value,
-                cargoWeight: parseInt(divDCargoWeight.value)
-            };
-        
-            // Find the box car corresponding to the selected boxCarID
-            const selectedBoxCar = boxCarArray.find(boxCar => boxCar.boxCarID === divDBoxCarSelected.value);
-        
-            // Calculate new gross weight if this cargo were added
-            const newGrossWeight = selectedBoxCar.tareWeight + selectedBoxCar.cargoWeight + freightEntry.cargoWeight;
-        
-            if (newGrossWeight <= selectedBoxCar.maxGrossWeight) {
-                // Add cargo weight to the selected box car
-                selectedBoxCar.cargoWeight += freightEntry.cargoWeight;
-                selectedBoxCar.grossWeight = newGrossWeight;
-                boxCarCargoManifestArray.push(freightEntry);
-                divF.hidden = true;
-                divE.hidden = false;
-                displayBoxCarManifest(boxCarCargoManifestArray);
+        if (currentDay == 1) {
+            if (divDTransportID.value === "") {
+                divDTransportIDSpan.textContent = "Must enter a transport ID";
+            } else if (divDDescription.value === "") {
+                divDDescriptionSpan.textContent = "Must enter a Description";
+            } else if (isNaN(divDCargoWeight.value) || parseInt(divDCargoWeight.value) <= 0) {
+                divDCargoWeightSpan.textContent = "Cargo weight must be a number and > 0";
+            } else if (!(/[a-zA-Z]{3}\d{4}S0[1-4]/).test(divDTransportID.value)){
+                divDTransportIDSpan.textContent = "Transport ID must match the following format: 3 letters, 4 digits, S0[1-4]"
             } else {
-                // If exceeds max gross weight, add to proper warehouse Array
-                s1WarehouseCargoManifestArray.push(freightEntry);
-                divF.hidden = false;
-                divE.hidden = true;
-                divDTransportIDSpan.textContent = "Cargo Diverted to Warehouse - Weight Exceeded";
-                displayWarehouseManifest(s1WarehouseCargoManifestArray, s2WarehouseCargoManifestArray, s3WarehouseCargoManifestArray, s4WarehouseCargoManifestArray);
+                const freightEntry = {
+                    boxCarID: divDBoxCarSelected.value,
+                    transportID: divDTransportID.value,
+                    description: divDDescription.value,
+                    cargoWeight: parseInt(divDCargoWeight.value)
+                };
+            
+                // Find the box car corresponding to the selected boxCarID
+                const selectedBoxCar = boxCarArray.find(boxCar => boxCar.boxCarID === divDBoxCarSelected.value);
+            
+                // Calculate new gross weight if this cargo were added
+                const newGrossWeight = selectedBoxCar.tareWeight + selectedBoxCar.cargoWeight + freightEntry.cargoWeight;
+            
+                if (newGrossWeight <= selectedBoxCar.maxGrossWeight) {
+                    // Add cargo weight to the selected box car
+                    selectedBoxCar.cargoWeight += freightEntry.cargoWeight;
+                    selectedBoxCar.grossWeight = newGrossWeight;
+                    boxCarCargoManifestArray.push(freightEntry);
+                    divF.hidden = true;
+                    divE.hidden = false;
+                    displayBoxCarManifest(boxCarCargoManifestArray);
+                } else {
+                    // If exceeds max gross weight, add to proper warehouse Array
+                    s1WarehouseCargoManifestArray.push(freightEntry);
+                    totalWarehouseCargoManifestArray.push(freightEntry);
+                    displayWarehouseManifest(s1WarehouseCargoManifestArray, s2WarehouseCargoManifestArray, s3WarehouseCargoManifestArray, s4WarehouseCargoManifestArray);
+                    divF.hidden = false;
+                    divE.hidden = true;
+                    divDTransportIDSpan.textContent = "Cargo Diverted to Warehouse - Weight Exceeded";
+                }
+                // Update display
+                displayConfiguredBoxCars(boxCarArray);
             }
-            // Update display
-            displayConfiguredBoxCars(boxCarArray);
+        } else {
+            divDTransportIDSpan.textContent = "Cannot add freight after day 1!"
+
         }
     };
 
     const displayBoxCarManifest = (boxCarCargoManifestArray) => { 
+        console.log(boxCarCargoManifestArray);
         // Check if tbody exists and remove it
         let oldTbody = boxcarManifestTable.querySelector('tbody');
         if (oldTbody) {
@@ -342,6 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const warehouseArrays = [s1WarehouseCargoManifestArray, s2WarehouseCargoManifestArray, s3WarehouseCargoManifestArray, s4WarehouseCargoManifestArray];
         const warehouseTables = [warehouseManifestTableS1, warehouseManifestTableS2, warehouseManifestTableS3, warehouseManifestTableS4];
         const totalCargoWeightIds = ["#divFTotalCargoWeightIntValueS1", "#divFTotalCargoWeightIntValueS2", "#divFTotalCargoWeightIntValueS3", "#divFTotalCargoWeightIntValueS4"];
+        let totalWarehouseCargoWeight = 0;
     
         warehouseArrays.forEach((array, index) => {
             const table = warehouseTables[index];
@@ -370,6 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Check if the key is 'cargoWeight' and add to totalCargoWeight
                     if (key === 'cargoWeight') {
                         totalCargoWeight += parseFloat(freightEntry[key]);
+                        totalWarehouseCargoWeight += parseFloat(freightEntry[key]);
                     }
                 }
                 tableBody.append(tableRow);
@@ -378,6 +389,9 @@ document.addEventListener("DOMContentLoaded", () => {
             table.append(tableBody);
             $(totalCargoWeightId).textContent = totalCargoWeight;
         });
+        let totalCargoWeightAllStations = $("#divFTotalCargoWeightAllStations");
+        totalCargoWeightAllStations.textContent = totalWarehouseCargoWeight;
+        document.cookie = `totalWeightWarehouses=${totalWarehouseCargoWeight}`;
     
         console.log("Warehouse manifests displayed", s1WarehouseCargoManifestArray, s2WarehouseCargoManifestArray, s3WarehouseCargoManifestArray, s4WarehouseCargoManifestArray);
     };
@@ -387,7 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Check if tbody exists and remove ot
         let oldTbody = completeFreightStatusTable.querySelector('tbody');
         if (oldTbody) {
-            completeFreightStatusTable.removeChild('tbody');
+            completeFreightStatusTable.removeChild(oldTbody);
         }
 
         let tableBody = document.createElement('tbody');
@@ -542,6 +556,12 @@ document.addEventListener("DOMContentLoaded", () => {
         changeDiv(divG);
         displayCompleteFreightStatus(boxCarCargoManifestArray, totalWarehouseCargoManifestArray);
     });
+
+    sumDisplay.addEventListener("click", () => {
+        clearRadioSelections();
+        window.location.href= "summaryDisplay.html";
+    });
+
     dayInputElement.value = currentDay;
     dayInputElement.textContent = currentDay;
 
@@ -554,7 +574,7 @@ document.addEventListener("DOMContentLoaded", () => {
     divEReturnToMainPageBtn.addEventListener("click", () => changeDiv(divA));
     divFReturnToMainPageBtn.addEventListener("click", () => changeDiv(divA));
     divGReturnToMainPageBtn.addEventListener("click", () => changeDiv(divA));
-    processCargoBtn.addEventListener("click", () => processCargo(boxCarCargoManifestArray, boxCarArray, totalWarehouseCargoManifestArray, s1WarehouseCargoManifestArray, s2WarehouseCargoManifestArray, s3WarehouseCargoManifestArray, s4WarehouseCargoManifestArray));
+    processCargoBtn.addEventListener("click", () => processCargo(boxCarCargoManifestArray, boxCarArray, s1WarehouseCargoManifestArray, s2WarehouseCargoManifestArray, s3WarehouseCargoManifestArray, s4WarehouseCargoManifestArray));
     returnToCreateBoxCar.addEventListener("click", () => changeDiv(divB));
     returnToCreateBoxCar.addEventListener("click", () => resetForm([boxCarIDInput, tareWeightInput, maxGrossWeightInput], [" ", 0, 0]));
     divDResetFormBtn.addEventListener("click", () => divDResetForm());

@@ -28,6 +28,8 @@
                 <input type="radio" id="divFRadio" class="divFRadio" name="DisplayWarehouseManifest">
                 <label for="divGRadio">All Freight Status</label>
                 <input type="radio" id="divGRadio" class="divGRadio" name="DisplayAllFreight">
+                <label for="sumDisplay">System Summary</label>
+                <input type="radio" id="sumDisplay" class="sumDisplay" name="sumDisplay">
             </div>
         </div>
 
@@ -226,6 +228,15 @@
                                 <td colspan="3"></td>
                                 <td>Total Cargo Weight:</td>
                                 <td id="divFTotalCargoWeightIntValueS4">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <table id="totalWarehouseManifest">
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>Total Cargo Weight All Stations:</td>
+                                <td id="divFTotalCargoWeightAllStations">0</td>
                             </tr>
                         </tfoot>
                     </table>
