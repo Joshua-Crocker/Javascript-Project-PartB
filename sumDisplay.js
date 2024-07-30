@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Function to get the value of a specific cookie by name
-    function getCookie(cname) {
+    const getCookie = (cname) => {
         let name = cname + "=";
         let decodedCookie = decodeURIComponent(document.cookie);
         let ca = decodedCookie.split(';');
