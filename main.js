@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const divEReturnToMainPageBtn = $("#divEReturnMainPage");
     const returnToCreateFreightEntryBtn = $("#returnToCreateFreightEntry");
 
-
     // Get the table for div F (Warehouse Manifest)
     const warehouseManifestTableS1 = $("#warehouseManifestS1");
     const warehouseManifestTableS2 = $("#warehouseManifestS2");
@@ -441,7 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         completeFreightStatusTable.append(tableBody);
-    }
+    };
     
     /*
         Function which passes in "inputsToReset" and "inputDefaultValue"
@@ -470,7 +469,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Increment the day and station number
         currentDay += 1;
         currentStationNum = currentStationNum + 1;
-        currentStation = `S${currentStationNum}`;
+
     
         // Set the value of the dayInput element
         dayInputElement.textContent = currentDay;
