@@ -29,9 +29,16 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
     // Retrieve cookie values
+    let totalOverallWeight = 0;
     let totalWeightBoxCarsCookie = getCookie("totalWeightBoxCars");
     let totalWeightWarehousesCookie = getCookie("totalWeightWarehouses");
-    let totalOverallWeight = parseInt(totalWeightBoxCarsCookie) + parseInt(totalWeightWarehousesCookie);
+    if (!getCookie("totalWeightWarehouses")) {
+      totalOverallWeight = parseInt(totalWeightBoxCarsCookie);
+    } else if (!getCookie("totalWeightBoxCars")) {
+      totalOverallWeight = parseInt(totalWeightWarehousesCookie);
+    } else {
+      totalOverallWeight = parseInt(totalWeightBoxCarsCookie) + parseInt(totalWeightWarehousesCookie);
+    }
 
     // Display the retrieved cookie values
     $("#totalWeightBoxCars").value = totalWeightBoxCarsCookie;
